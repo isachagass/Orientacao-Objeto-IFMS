@@ -1,141 +1,270 @@
+class Pessoa{
+    #nome
+    #titulo
+    #cpf
+    // #votos
+
+    constructor(nome, titulo, cpf){
+        this.#nome = nome
+        this.#titulo = titulo
+        this.#cpf = cpf
+        // this.#votos = new Voto()
+    }
+
+    get nome(){
+        return this.#nome
+    }
+
+
+    
+}
+
+class Candidato{
+    #id
+    #nome
+    #cpf
+
+    constructor(id, nome, cpf){
+        this.#id = id
+        this.#nome = nome
+        this.#cpf = cpf
+    }
+
+    get id(){
+        return this.#id
+    }
+
+    get nome(){
+        return this.#nome
+    }
+}
+
+class Urna{
+    #votos
+
+    constructor(){
+        this.#votos = []
+    }
+
+    adicionar(voto){
+        this.#votos.push(voto)
+    }
+
+    listar(){
+        for(const i of this.#votos){
+            console.log(`${i.titulo}: ${i.id_candidato}`)
+        }
+    }
+}
+
+class Voto{
+    #id_candidato
+    #titulo_eleitor
+
+    constructor(id_candidato, titulo){
+        this.#id_candidato = id_candidato
+        this.#titulo_eleitor = titulo
+    }
+
+    get id_candidato(){
+        return this.#id_candidato
+    }
+
+    get titulo(){
+        return this.#titulo_eleitor
+    }
+
+}
+
+isa = new Pessoa("isa", "1234", "111")
+candidato1 = new Candidato("12", "lula", "1234")
+
+votoIsa = new Voto("12", "111")
+urna = new Urna()
+urna.adicionar(votoIsa)
+urna.listar()
+
+
+
+//------------------------------------------
 class BancoCentral{
-     static transferirValor(emitente, destino, valor, senha)
-     {        
-          if(emitente.sacar(valor,senha))
-            destino.depositoViaBC(valor);
-     }
+    static transferir(emitente, destino, valor, senha){
+        if(emitente.sacar(valor, senha)){
+            destino.depositar_via_BC(valor)
+        }
+        console.log("deposito bc concluido")
+
+    }
+}
+
+class Historico{
+    #historicos
+
+    constructor(){
+        this.#historicos = []
+    }
+
+    adicionar(transacao){
+        this.#historicos.push(transacao)
+    }
+
+    listar(){
+
+        for (const i of this.#historicos){
+            console.log(`\nTipo: ${i.tipo}\nValor: ${i.valor}`)
+        }
+
+
+    }
+}
+
+class Transacao{
+    #tipo
+    #valor
+
+    constructor(tipo, valor){
+        this.#tipo = tipo
+        this.#valor = valor
+    }
+
+    get tipo(){
+        return this.#tipo
+    }
+
+    get valor(){
+        return this.#valor
+    }
+
 }
 
 class Pessoa{
     #nome
     #cpf
-    #dataNasc
-    #endereco
-    
-    get nome()
-    {
-        return this.#nome;
+
+    constructor(nome, cpf){
+        this.#nome = nome
+        this.#cpf = cpf
     }
 
-    constructor(cpf, nome, dataNasc)
-    {
-       this.#cpf = cpf
-       this.#nome = nome
-       this.#dataNasc = dataNasc       
-    }
-
-    criarConta(){
+    criar_conta(){
         return new Conta(this)
     }
+
+    get nome(){
+        return this.#nome
+    }
 }
 
-class Conta {
-    #senha = "admin"
+class Conta{
+    #senha = "1234"
     #dono
     #saldo
-    constructor(dono) {
-        this.#saldo = 0;
+    #historico
+
+    constructor(dono){
         this.#dono = dono
+        this.#saldo = 0
+        this.#historico = new Historico()
     }
 
-    //get sempre retorna algo
-    // get saldo()    { 
-    //     if( this.#saldo <= 300 )
-    //          return this.#saldo;
-    //     else
-    //         return "Valor impede demonstração";
-    // }
-
-    //set é pra atualizar o valor
-    // set saldo(valor)    {
-    //     this.#saldo += valor;
-    // }
-
-    sacar(valorSaque, senha) {    
-        if(valorSaque <= 0)
-        {
-            console.log("Não é possível sacar valor negativo")
-            return false
-        }    
-        if(!this.validarSenha(senha))
-        {
-            console.log("Senha incorreta")
-            return false
-        }
-        if ((this.#saldo - valorSaque) >= 0) {
-            this.#saldo -= valorSaque
-            return true
-        }else
-            {
-                console.log("Saldo insuficiente")
-                return false
-            }
-
-    }
-
-    extrato(senha)
-    {
-        if(!this.validarSenha(senha))
-        {
-            console.log("Senha incorreta")
+    extrato(senha){
+        if (!this.verificar_senha(senha)){
+            console.log("\nSenha incorreta!")
             return
         }
-        console.log(`${this.#dono.nome}, seu saldo é ${this.#saldo}`)
+
+        console.log("\nConta: "+this.#dono.nome + "\nSaldo em conta: \nR$ "+ this.#saldo)
+
     }
 
-    depositar(valor,senha)//sobrecarga
-    {
-        if(!this.validarSenha(senha))
-        {
-            console.log("Senha incorreta")
+    sacar(valor, senha){
+        if (!this.verificar_senha(senha)){
+            console.log("\nSenha incorreta!")
+            return false
+        }
+
+        if (valor > this.#saldo){
+            console.log("\nSaldo insuficiente!")
+            return false
+        }
+
+        this.#saldo -= valor
+        console.log("\nSaque realizado com sucesso!")
+        // console.log(this.#saldo)
+
+        const transacao = new Transacao("SAQUE", valor)
+        this.#historico.adicionar(transacao)
+
+
+        return true
+       
+
+    }
+
+    depositar(valor, senha){
+        if (!this.verificar_senha(senha)){
+            console.log("\nSenha incorreta!")
             return
         }
-        if(valor < 0){
-            console.log("O valor depositado não pode ser negativo")
-            return;
+        if (valor < 0){
+            console.log("\nDeposito negado!")
+            return
         }
-        if(valor > 5000){
-            console.log("Valor muito alto. Dirija-se ao caixa. Atendimento das 10:00h às 15:00hs")
-            return;
+
+        if (valor > 2000){
+            console.log("\nLimite de deposito excedido!")
+            return 
         }
         this.#saldo += valor
+
+        const transacao = new Transacao("DEPOSITO", valor)
+
+        this.#historico.adicionar(transacao)
+
+        // console.log(this.#historico.listar())
+        console.log("\nDeposito realizado com sucesso!")
+        // console.log(this.#saldo)
+
     }
 
-    depositoViaBC(saldo)
-    {
-        this.#saldo += saldo
+    depositar_via_BC(valor){
+        this.#saldo += valor
+        console.log("deposito via bc, saldo: "+this.#saldo)
+
+        const transacao = new Transacao("DEPOSITO BC", valor)
+        this.#historico.adicionar(transacao)
+
     }
 
-    validarSenha(senha)
-    {
-        return senha === this.#senha
+    verificar_senha(senha){
+        return senha == this.#senha ? true : false
+    }
+
+    mostrar_valor(){
+        console.log("\nHistórico da conta: "+this.#dono.nome)
+
+        this.#historico.listar()
     }
 }
 
-Jose = new Pessoa(126365, "José Silva", "10/10/88")
-Manoel = new Pessoa(123654,"Manoel Costa", "10/10/10")
+isa = new Pessoa("isa", "1234")
+isaConta = isa.criar_conta()
 
-contaJose = Jose.criarConta()
-contaManoel = Manoel.criarConta()
-contaCopia = contaJose
-//Fazer operação de transferência
-contaJose.depositar(50, "admin")
-contaManoel.depositar(150, "admin")
-contaJose.extrato("admin")
-contaManoel.extrato("admin")
+isaConta.depositar(100, "1234")
+// isaConta.sacar(60, "1234")
+isaConta.extrato("1234")
 
-// BC = new BancoCentral()
-BancoCentral.transferirValor(contaJose, contaManoel, 40, "admin")
+belli = new Pessoa("belli", "1342")
+belliConta = belli.criar_conta()
 
-contaJose.extrato("admin")
-contaManoel.extrato("admin")
-contaCopia.extrato("admin")
-contaCopia2 = contaCopia
+belliConta.extrato("1234")
 
-contaCopia.depositar(1000,"admin")
-console.log("---------------------------")
-contaJose.extrato("admin")
-contaManoel.extrato("admin")
-contaCopia.extrato("admin")
-console.log("--")
-contaCopia2.extrato("admin")
+BancoCentral.transferir(isaConta, belliConta, 20, "1234")
+
+isaConta.extrato("1234")
+belliConta.extrato("1234")
+
+isaConta.mostrar_valor()
+belliConta.mostrar_valor()
+
+
