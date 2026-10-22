@@ -20,7 +20,12 @@ class Historico{
     }
 
     listar(){
-        return this.#historicos
+
+        for (const i of this.#historicos){
+            console.log(`\nTipo: ${i.tipo}\nValor: ${i.valor}`)
+        }
+
+
     }
 }
 
@@ -31,6 +36,14 @@ class Transacao{
     constructor(tipo, valor){
         this.#tipo = tipo
         this.#valor = valor
+    }
+
+    get tipo(){
+        return this.#tipo
+    }
+
+    get valor(){
+        return this.#valor
     }
 
 }
@@ -89,6 +102,11 @@ class Conta{
         this.#saldo -= valor
         console.log("\nSaque realizado com sucesso!")
         // console.log(this.#saldo)
+
+        const transacao = new Transacao("SAQUE", valor)
+        this.#historico.adicionar(transacao)
+
+
         return true
        
 
@@ -114,7 +132,7 @@ class Conta{
 
         this.#historico.adicionar(transacao)
 
-        console.log(this.#historico.listar())
+        // console.log(this.#historico.listar())
         console.log("\nDeposito realizado com sucesso!")
         // console.log(this.#saldo)
 
@@ -124,10 +142,19 @@ class Conta{
         this.#saldo += valor
         console.log("deposito via bc, saldo: "+this.#saldo)
 
+        const transacao = new Transacao("DEPOSITO BC", valor)
+        this.#historico.adicionar(transacao)
+
     }
 
     verificar_senha(senha){
         return senha == this.#senha ? true : false
+    }
+
+    mostrar_valor(){
+        console.log("\nHistórico da conta: "+this.#dono.nome)
+
+        this.#historico.listar()
     }
 }
 
@@ -148,3 +175,5 @@ BancoCentral.transferir(isaConta, belliConta, 20, "1234")
 isaConta.extrato("1234")
 belliConta.extrato("1234")
 
+isaConta.mostrar_valor()
+belliConta.mostrar_valor()
