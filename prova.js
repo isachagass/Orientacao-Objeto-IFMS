@@ -52,42 +52,10 @@ class Chassi{
 }
 
 class Roda{
-    #status
-
 
     constructor(status){
-        this.#status = status
-    
+
     }
-
-    get status(){
-        return this.#status
-    }
-
-    set status(status){
-        this.#status = status
-    }
-
-
-}
-
-class Estepe{
-    #status
-
-    constructor(status){
-        this.#status = status
-    
-    }
-
-    get status(){
-        return this.#status
-    }
-
-    set status(status){
-        this.#status = status
-    }
-
-  
 
 }
 
@@ -111,18 +79,17 @@ class FabricaDeCarros{
     static fabricar_carro(){
         const chassi = new Chassi()
 
-        const roda1 = new Roda("ativado")
-        const roda2 = new Roda("ativado")
-        const roda3 = new Roda("ativado")
-        const roda4 = new Roda("ativado")
+        const rodas = []
 
-        const estepe = new Estepe("desativado")
+        for (let i = 0; i<4; i++){
+            rodas.push(new Roda())
+        }
+
+        const estepe = new Roda()
 
         const motor = new Motor()
 
-        // console.log("equipamentos criados")
-
-        const novo_carro = new Carro(roda1, roda2, roda3, roda4, estepe, chassi, motor)
+        const novo_carro = new Carro(rodas, estepe, chassi, motor)
 
         console.log("Caro criado")
 
@@ -156,10 +123,7 @@ class Cliente{
 }
 
 class Carro{
-    #roda1
-    #roda2
-    #roda3
-    #roda4
+    #rodas
     #estepe
     #chassi
     #motor
@@ -168,33 +132,18 @@ class Carro{
     #cor_atual
 
 
-    constructor(roda1, roda2, roda3, roda4, estepe, chassi, motor){
-        this.#roda1 = roda1
-        this.#roda2 =  roda2
-        this.#roda3 = roda3
-        this.#roda4 = roda4
+    constructor(rodas, estepe, chassi, motor){
         this.#motor = motor
         this.#chassi = chassi
         this.#estepe = estepe
         this.#mudanca_cor = 0
         this.#tentativas = 0
         this.#cor_atual = "preto"
+        this.#rodas = rodas
     }
 
-    get roda1(){
-        return this.#roda1
-    }
-
-    get roda2(){
-        return this.#roda2
-    }
-
-    get roda3(){
-        return this.#roda3
-    }
-
-    get roda4(){
-        return this.#roda4
+    get rodas(){
+        return this.#rodas
     }
 
     get estepe(){
@@ -243,17 +192,25 @@ class Carro{
         }
     }
 
-    mudanca_estepe(roda_quebrada, roda_nova){
-        if (roda_nova.status == "desativado"){
-            roda_quebrada.status = "desativado"
-            roda_nova.status = "ativado"
+    mudanca_estepe(indice){
 
-            console.log("Roda trocada pela nova")
-            return
-        }else{
-            console.log("Essa roda já está em uso")
+        if (indice < 0 || indice >= this.#rodas.lenght){
+            console.log("Inidice invalido")
             return
         }
+
+
+        let temporario = this.#estepe
+
+        this.#estepe = this.#rodas[indice]
+
+        this.#rodas[indice] = temporario
+
+
+        console.log("Roda trocada pela nova")
+        return
+    
+     
     }
 }
 
@@ -263,8 +220,8 @@ CarroIsa = FabricaDeCarros.fabricar_carro()
 
 console.log("Chassi do Carro:",CarroIsa.chassi.numero_chassi)
 console.log("Numero do motor:", CarroIsa.motor.id)
-console.log("Status da Roda 1:", CarroIsa.roda1.status)
-console.log("Status do Estepe:", CarroIsa.estepe.status)
+// console.log("Status da Roda 1:", CarroIsa.roda1.status)
+// console.log("Status do Estepe:", CarroIsa.estepe.status)
 
 CarroIsa.trocar_cor("vermelho")
 console.log("Cor atual:", CarroIsa.cor_atual)
@@ -279,5 +236,5 @@ CarroIsa.trocar_cor("vermelho")
 console.log("Cor atual:", CarroIsa.cor_atual)
 
 
-CarroIsa.mudanca_estepe(CarroIsa.roda1, CarroIsa.estepe)
-CarroIsa.mudanca_estepe(CarroIsa.roda2, CarroIsa.estepe)
+CarroIsa.mudanca_estepe(1)
+CarroIsa.mudanca_estepe(2)
