@@ -1,51 +1,72 @@
 class Animais{
     nome
-    especie
+    idade
+    habitat
     
-    constructor(nome, especie){
+    constructor(nome,idade, habitat){
         this.nome = nome
-        this.especie = especie
+        this.idade = idade
+        this.habitat = habitat
     }
 
     apresentar(){
-        console.log(`Nome: ${this.nome} \nEspecie: ${this.especie}`)
+        console.log(`
+Nome: ${this.nome}
+Idade: ${this.idade}
+Habitat: ${this.habitat}
+Especie: ${this.identificar_especie()}
+        `)
+        // chama o metodo criado para saber a especie
+    }
+
+    identificar_especie(){
+        // instanceof serve para saber se esse objeto foi instanciado de qual classe
+        // e não precisar armazenar essa informação em na memoria
+        if (this instanceof Mamifero){
+            return "Mamifero"
+        } 
+        if (this instanceof Ave){
+            return "Ave"
+        }
+        if (this instanceof Peixe){
+            return "Peixe"
+        }
     }
 }
 
 class Mamifero extends Animais{
+    // quando você não declara um construtor na classe filha, o JavaScript cria um construtor padrão que repassa os argumentos para a classe pai.
 
-    constructor(nome){
-        super(nome, "mamifero")
-    }
+    // constructor(nome, idade, habitat){
+    //     super(nome, idade, habitat)
+    // }
 
-}
-
-class Ave extends Animais{
-    
-    constructor(nome){
-        super(nome, "ave")
-    }
+    // só precisa declarar um construtor quando a classe filha tiver alguma particularidade na inicialização. algum atributo a mais
 
 }
 
-class Peixes extends Animais{
+class Ave extends Animais{}
+class Peixe extends Animais{}
 
-    constructor(nome){
-        super(nome, "peixe")
-    }
-}
+class Leao extends Mamifero{}
+class Leoa extends Mamifero{}
+class Macaco extends Mamifero{}
+
+class Sardinha extends Peixe{}
+class Tucunare extends Peixe{}
+
+class Pardal extends Ave{}
+class Aguia extends Ave{}
 
 
-const leao = new Mamifero("leao")
-const leoa = new Mamifero("leoa")
-const macaco = new Mamifero("macaco")
+const leao = new Leao("Leão", 5, "Savana");
+const leoa = new Leoa("Leoa", 4, "Savana");
+const macaco = new Macaco("Macaco", 3, "Floresta");
 
-const sardinha = new Peixes("sardinha")
-const tucunare = new Peixes("tucunare")
+const sardinha = new Sardinha("Sardinha", 1, "Água salgada");
+const tucunare = new Tucunare("Tucunaré", 2, "Água doce");
 
-const pardal = new Ave("pardar")
-const aguia = new Ave("aguia")
+const pardal = new Pardal("Pardal", 1, "Floresta");
+const aguia = new Aguia("Águia", 6, "Montanhas");
 
-pardal.apresentar()
-
-// class Leao extends Mamifero{}
+leao.apresentar()
