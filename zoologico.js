@@ -21,6 +21,7 @@ Especie: ${this.identificar_especie()}
 
     identificar_especie(){
         // instanceof serve para saber se esse objeto foi instanciado de qual classe
+        // ele retorna true ou false
         // e não precisar armazenar essa informação em na memoria
         if (this instanceof Mamifero){
             return "Mamifero"
